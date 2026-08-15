@@ -11,7 +11,8 @@
             --text-color: #333333;
             --primary-color: #2ecc71;
             --primary-hover: #27ae60;
-            --toggle-bg: #dfe6e9;
+            --disabled-bg: #e0e0e0;
+            --disabled-text: #7f8c8d;
             --border-color: #e0e0e0;
         }
 
@@ -43,64 +44,39 @@
             margin-bottom: 25px;
         }
 
-        /* Toggle Switch Styling */
-        .mode-container {
+        /* Mode Button Controls */
+        .mode-buttons {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 25px;
             gap: 10px;
+            margin-bottom: 25px;
         }
 
-        .switch-label {
-            font-weight: 600;
+        .mode-btn {
+            flex: 1;
+            padding: 12px;
             font-size: 0.95rem;
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
             cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--toggle-bg);
-            transition: .3s;
-            border-radius: 34px;
+            transition: all 0.2s ease;
         }
 
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .3s;
-            border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        input:checked + .slider {
+        .mode-btn.active {
             background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 2px 5px rgba(46, 204, 113, 0.3);
         }
 
-        input:checked + .slider:before {
-            transform: translateX(26px);
+        .mode-btn.inactive {
+            background-color: var(--disabled-bg);
+            color: var(--disabled-text);
+            opacity: 0.6;
+            cursor: pointer;
+        }
+
+        .mode-btn.inactive:hover {
+            opacity: 0.8;
         }
 
         /* Input Rows Styling */
@@ -137,7 +113,7 @@
             border-color: var(--primary-color);
         }
 
-        /* Hidden class for toggling views */
+        /* Hidden utility */
         .hidden {
             display: none;
         }
@@ -171,36 +147,33 @@
     <div class="calculator-card">
         <h1>Weekly Pay Calculator</h1>
 
-        <!-- Mode Toggle -->
-        <div class="mode-container">
-            <span class="switch-label" id="mode-text">Everyday Mode</span>
-            <label class="switch">
-                <input type="checkbox" id="mode-toggle" onchange="toggleMode()">
-                <span class="slider"></span>
-            </label>
+        <!-- Mode Buttons -->
+        <div class="mode-buttons">
+            <button id="btn-everyday" class="mode-btn active" onclick="setMode('everyday')">Everyday</button>
+            <button id="btn-supervisor" class="mode-btn inactive" onclick="setMode('supervisor')">Supervisor</button>
         </div>
 
         <!-- Everyday Mode Inputs -->
         <div id="everyday-inputs">
             <div class="input-group">
                 <label>Base <span class="rate-hint" id="rate-e-base"></span></label>
-                <input type="number" step="any" min="0" class="hours-input" data-rate-key="everyday.base" oninput="calculateTotal()" placeholder="0">
+                <input type="number" step="any" min="0" class="hours-input" data-rate="base" oninput="calculateTotal()" placeholder="0">
             </div>
             <div class="input-group">
                 <label>Saturday <span class="rate-hint" id="rate-e-sat"></span></label>
-                <input type="number" step="any" min="0" class="hours-input" data-rate-key="everyday.saturday" oninput="calculateTotal()" placeholder="0">
+                <input type="number" step="any" min="0" class="hours-input" data-rate="saturday" oninput="calculateTotal()" placeholder="0">
             </div>
             <div class="input-group">
                 <label>Sunday <span class="rate-hint" id="rate-e-sun"></span></label>
-                <input type="number" step="any" min="0" class="hours-input" data-rate-key="everyday.sunday" oninput="calculateTotal()" placeholder="0">
+                <input type="number" step="any" min="0" class="hours-input" data-rate="sunday" oninput="calculateTotal()" placeholder="0">
             </div>
             <div class="input-group">
                 <label>Sunday Overtime <span class="rate-hint" id="rate-e-sunOt"></span></label>
-                <input type="number" step="any" min="0" class="hours-input" data-rate-key="everyday.sundayOvertime" oninput="calculateTotal()" placeholder="0">
+                <input type="number" step="any" min="0" class="hours-input" data-rate="sundayOvertime" oninput="calculateTotal()" placeholder="0">
             </div>
             <div class="input-group">
                 <label>Public Holiday <span class="rate-hint" id="rate-e-ph"></span></label>
-                <input type="number" step="any" min="0" class="hours-input" data-rate-key="everyday.publicHoliday" oninput="calculateTotal()" placeholder="0">
+                <input type="number" step="any" min="0" class="hours-input" data-rate="publicHoliday" oninput="calculateTotal()" placeholder="0">
             </div>
         </div>
 
@@ -208,23 +181,23 @@
         <div id="supervisor-inputs" class="hidden">
             <div class="input-group">
                 <label>Base <span class="rate-hint" id="rate-s-base"></span></label>
-                <input type="number" step="any" min="0" class="hours-input" data-rate-key="supervisor.base" oninput="calculateTotal()" placeholder="0">
+                <input type="number" step="any" min="0" class="hours-input" data-rate="base" oninput="calculateTotal()" placeholder="0">
             </div>
             <div class="input-group">
                 <label>Saturday <span class="rate-hint" id="rate-s-sat"></span></label>
-                <input type="number" step="any" min="0" class="hours-input" data-rate-key="supervisor.saturday" oninput="calculateTotal()" placeholder="0">
+                <input type="number" step="any" min="0" class="hours-input" data-rate="saturday" oninput="calculateTotal()" placeholder="0">
             </div>
             <div class="input-group">
                 <label>Sunday <span class="rate-hint" id="rate-s-sun"></span></label>
-                <input type="number" step="any" min="0" class="hours-input" data-rate-key="supervisor.sunday" oninput="calculateTotal()" placeholder="0">
+                <input type="number" step="any" min="0" class="hours-input" data-rate="sunday" oninput="calculateTotal()" placeholder="0">
             </div>
             <div class="input-group">
                 <label>Sunday Overtime <span class="rate-hint" id="rate-s-sunOt"></span></label>
-                <input type="number" step="any" min="0" class="hours-input" data-rate-key="supervisor.sundayOvertime" oninput="calculateTotal()" placeholder="0">
+                <input type="number" step="any" min="0" class="hours-input" data-rate="sundayOvertime" oninput="calculateTotal()" placeholder="0">
             </div>
             <div class="input-group">
                 <label>Public Holiday <span class="rate-hint" id="rate-s-ph"></span></label>
-                <input type="number" step="any" min="0" class="hours-input" data-rate-key="supervisor.publicHoliday" oninput="calculateTotal()" placeholder="0">
+                <input type="number" step="any" min="0" class="hours-input" data-rate="publicHoliday" oninput="calculateTotal()" placeholder="0">
             </div>
         </div>
 
@@ -256,7 +229,10 @@
             }
         };
 
-        // Populate rate tooltips on load
+        // Track the currently active mode ('everyday' or 'supervisor')
+        let currentMode = 'everyday';
+
+        // Display current rates in parentheses next to labels
         document.getElementById('rate-e-base').innerText = `($${rates.everyday.base}/h)`;
         document.getElementById('rate-e-sat').innerText = `($${rates.everyday.saturday}/h)`;
         document.getElementById('rate-e-sun').innerText = `($${rates.everyday.sunday}/h)`;
@@ -269,11 +245,24 @@
         document.getElementById('rate-s-sunOt').innerText = `($${rates.supervisor.sundayOvertime}/h)`;
         document.getElementById('rate-s-ph').innerText = `($${rates.supervisor.publicHoliday}/h)`;
 
-        function toggleMode() {
-            const isSupervisor = document.getElementById('mode-toggle').checked;
+        function setMode(mode) {
+            currentMode = mode;
+            
+            const btnEveryday = document.getElementById('btn-everyday');
+            const btnSupervisor = document.getElementById('btn-supervisor');
             const everydayDiv = document.getElementById('everyday-inputs');
             const supervisorDiv = document.getElementById('supervisor-inputs');
-            const modeText = document.getElementById('mode-text');
 
-            if (isSupervisor) {
+            if (mode === 'everyday') {
+                btnEveryday.className = "mode-btn active";
+                btnSupervisor.className = "mode-btn inactive";
+                everydayDiv.classList.remove('hidden');
+                supervisorDiv.classList.add('hidden');
+            } else {
+                btnEveryday.className = "mode-btn inactive";
+                btnSupervisor.className = "mode-btn active";
                 everydayDiv.classList.add('hidden');
+                supervisorDiv.classList.remove('hidden');
+            }
+            
+            // Recalculate instantly when switching modes
