@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="UTF-8">
-<title>Weekly Pay Calculator</title>
+<title>pay calculator</title>
 <style>
     body {
         font-family: 'Segoe UI', sans-serif;
@@ -81,42 +82,42 @@
 <div class="grid">
 
     <div class="card">
-        <div class="card-title">Normal Hours</div>
+        <div class="card-title">normal</div>
 
-        <div class="row"><span>Base ($30/hr)</span><input type="number" data-key="base"></div>
-        <div class="row"><span>Saturday ($35/hr)</span><input type="number" data-key="sat"></div>
-        <div class="row"><span>Sunday ($40/hr)</span><input type="number" data-key="sun"></div>
-        <div class="row"><span>Sunday OT ($50/hr)</span><input type="number" data-key="sun_ot"></div>
-        <div class="row"><span>Public Holiday ($60/hr)</span><input type="number" data-key="ph"></div>
+        <div class="row"><span>base</span><input type="number" data-key="base"></div>
+        <div class="row"><span>saturday/OT</span><input type="number" data-key="sat"></div>
+        <div class="row"><span>sunday</span><input type="number" data-key="sun"></div>
+        <div class="row"><span>sunday OT</span><input type="number" data-key="sun_ot"></div>
+        <div class="row"><span>public holiday</span><input type="number" data-key="ph"></div>
     </div>
 
     <div class="card">
-        <div class="card-title">Supervising Hours</div>
+        <div class="card-title">supervisor</div>
 
-        <div class="row"><span>Supervising Base ($40/hr)</span><input type="number" data-key="s_base"></div>
-        <div class="row"><span>Supervising Saturday ($45/hr)</span><input type="number" data-key="s_sat"></div>
-        <div class="row"><span>Supervising Sunday ($55/hr)</span><input type="number" data-key="s_sun"></div>
-        <div class="row"><span>Supervising Sunday OT ($65/hr)</span><input type="number" data-key="s_sun_ot"></div>
-        <div class="row"><span>Supervising Public Holiday ($75/hr)</span><input type="number" data-key="s_ph"></div>
+        <div class="row"><span>base</span><input type="number" data-key="s_base"></div>
+        <div class="row"><span>saturday/OT</span><input type="number" data-key="s_sat"></div>
+        <div class="row"><span>sunday</span><input type="number" data-key="s_sun"></div>
+        <div class="row"><span>sunday OT</span><input type="number" data-key="s_sun_ot"></div>
+        <div class="row"><span>public holiday</span><input type="number" data-key="s_ph"></div>
     </div>
 
 </div>
 
-<div id="total">Total: $0.00</div>
+<div id="total">$0.00</div>
 
 <script>
     const rates = {
-        base: 30,
-        sat: 35,
-        sun: 40,
-        sun_ot: 50,
-        ph: 60,
+        base: 28.6,
+        sat: 34.32,
+        sun: 40.04,
+        sun_ot: 51.48,
+        ph: 57.2,
 
-        s_base: 40,
-        s_sat: 45,
-        s_sun: 55,
-        s_sun_ot: 65,
-        s_ph: 75
+        s_base: 30.29,
+        s_sat: 36.34,
+        s_sun: 42.4,
+        s_sun_ot: 54.52,
+        s_ph: 60.57
     };
 
     function calculateTotal() {
@@ -128,7 +129,7 @@
         });
 
         document.getElementById("total").textContent =
-            `Total: $${total.toFixed(2)}`;
+            `$${total.toFixed(2)}`;
     }
 
     document.querySelectorAll("input").forEach(input => {
