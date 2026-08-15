@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Pay Calculator</title>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --primary-color: #2ecc71;
+            --primary-hover: #27ae60;
+            --toggle-bg: #dfe6e9;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .calculator-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        /* Toggle Switch Styling */
+        .mode-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 10px;
+        }
+
+        .switch-label {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--toggle-bg);
+            transition: .3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Input Rows Styling */
+        .input-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            flex: 1;
+            font-size: 0.95rem;
+        }
+
+        .rate-hint {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            margin-left: 5px;
+        }
+
+        .input-group input {
+            width: 100px;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            text-align: right;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary-color);
+        }
+
+        /* Hidden class for toggling views */
+        .hidden {
+            display: none;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid var(--border-color);
+            margin: 25px 0;
+        }
+
+        /* Total Section Styling */
+        .total-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .total-title {
+            font-size: 1.2rem;
+        }
+
+        .total-amount {
+            font-size: 1.6rem;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator-card">
+        <h1>Weekly Pay Calculator</h1>
+
+        <!-- Mode Toggle -->
+        <div class="mode-container">
+            <span class="switch-label" id="mode-text">Everyday Mode</span>
+            <label class="switch">
+                <input type="checkbox" id="mode-toggle" onchange="toggleMode()">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <!-- Everyday Mode Inputs -->
+        <div id="everyday-inputs">
+            <div class="input-group">
+                <label>Base <span class="rate-hint" id="rate-e-base"></span></label>
+                <input type="number" step="any" min="0" class="hours-input" data-rate-key="everyday.base" oninput="calculateTotal()" placeholder="0">
+            </div>
+            <div class="input-group">
+                <label>Saturday <span class="rate-hint" id="rate-e-sat"></span></label>
+                <input type="number" step="any" min="0" class="hours-input" data-rate-key="everyday.saturday" oninput="calculateTotal()" placeholder="0">
+            </div>
+            <div class="input-group">
+                <label>Sunday <span class="rate-hint" id="rate-e-sun"></span></label>
+                <input type="number" step="any" min="0" class="hours-input" data-rate-key="everyday.sunday" oninput="calculateTotal()" placeholder="0">
+            </div>
+            <div class="input-group">
+                <label>Sunday Overtime <span class="rate-hint" id="rate-e-sunOt"></span></label>
+                <input type="number" step="any" min="0" class="hours-input" data-rate-key="everyday.sundayOvertime" oninput="calculateTotal()" placeholder="0">
+            </div>
+            <div class="input-group">
+                <label>Public Holiday <span class="rate-hint" id="rate-e-ph"></span></label>
+                <input type="number" step="any" min="0" class="hours-input" data-rate-key="everyday.publicHoliday" oninput="calculateTotal()" placeholder="0">
+            </div>
+        </div>
+
+        <!-- Supervisor Mode Inputs -->
+        <div id="supervisor-inputs" class="hidden">
+            <div class="input-group">
+                <label>Base <span class="rate-hint" id="rate-s-base"></span></label>
+                <input type="number" step="any" min="0" class="hours-input" data-rate-key="supervisor.base" oninput="calculateTotal()" placeholder="0">
+            </div>
+            <div class="input-group">
+                <label>Saturday <span class="rate-hint" id="rate-s-sat"></span></label>
+                <input type="number" step="any" min="0" class="hours-input" data-rate-key="supervisor.saturday" oninput="calculateTotal()" placeholder="0">
+            </div>
+            <div class="input-group">
+                <label>Sunday <span class="rate-hint" id="rate-s-sun"></span></label>
+                <input type="number" step="any" min="0" class="hours-input" data-rate-key="supervisor.sunday" oninput="calculateTotal()" placeholder="0">
+            </div>
+            <div class="input-group">
+                <label>Sunday Overtime <span class="rate-hint" id="rate-s-sunOt"></span></label>
+                <input type="number" step="any" min="0" class="hours-input" data-rate-key="supervisor.sundayOvertime" oninput="calculateTotal()" placeholder="0">
+            </div>
+            <div class="input-group">
+                <label>Public Holiday <span class="rate-hint" id="rate-s-ph"></span></label>
+                <input type="number" step="any" min="0" class="hours-input" data-rate-key="supervisor.publicHoliday" oninput="calculateTotal()" placeholder="0">
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- Total Display -->
+        <div class="total-container">
+            <span class="total-title">Estimated Gross Pay:</span>
+            <span class="total-amount" id="total-display">$0.00</span>
+        </div>
+    </div>
+
+    <script>
+        // EDIT YOUR HOURLY RATES HERE
+        const rates = {
+            everyday: {
+                base: 30.00,
+                saturday: 45.00,
+                sunday: 60.00,
+                sundayOvertime: 75.00,
+                publicHoliday: 75.00
+            },
+            supervisor: {
+                base: 40.00,
+                saturday: 60.00,
+                sunday: 80.00,
+                sundayOvertime: 100.00,
+                publicHoliday: 100.00
+            }
+        };
+
+        // Populate rate tooltips on load
+        document.getElementById('rate-e-base').innerText = `($${rates.everyday.base}/h)`;
+        document.getElementById('rate-e-sat').innerText = `($${rates.everyday.saturday}/h)`;
+        document.getElementById('rate-e-sun').innerText = `($${rates.everyday.sunday}/h)`;
+        document.getElementById('rate-e-sunOt').innerText = `($${rates.everyday.sundayOvertime}/h)`;
+        document.getElementById('rate-e-ph').innerText = `($${rates.everyday.publicHoliday}/h)`;
+
+        document.getElementById('rate-s-base').innerText = `($${rates.supervisor.base}/h)`;
+        document.getElementById('rate-s-sat').innerText = `($${rates.supervisor.saturday}/h)`;
+        document.getElementById('rate-s-sun').innerText = `($${rates.supervisor.sunday}/h)`;
+        document.getElementById('rate-s-sunOt').innerText = `($${rates.supervisor.sundayOvertime}/h)`;
+        document.getElementById('rate-s-ph').innerText = `($${rates.supervisor.publicHoliday}/h)`;
+
+        function toggleMode() {
+            const isSupervisor = document.getElementById('mode-toggle').checked;
+            const everydayDiv = document.getElementById('everyday-inputs');
+            const supervisorDiv = document.getElementById('supervisor-inputs');
+            const modeText = document.getElementById('mode-text');
+
+            if (isSupervisor) {
+                everydayDiv.classList.add('hidden');
