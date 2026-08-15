@@ -266,3 +266,17 @@
             }
             
             // Recalculate instantly when switching modes
+            calculateTotal();
+        }
+        function calculateTotal() {
+            // Target only the inputs within the currently active mode container
+            const inputs = document.querySelectorAll(#${currentMode}-inputs .hours-input);
+            let total = 0;
+            inputs.forEach(input => {
+                const hours = parseFloat(input.value) || 0;
+                const rateKey = input.getAttribute('data-rate');
+                const rate = rates[currentMode][rateKey];
+                total += hours * rate;
+            });
+            document.getElementById('total-display').innerText = $${total.toFixed(2)};
+        }
