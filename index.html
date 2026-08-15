@@ -5,66 +5,65 @@
 <title>Weekly Pay Calculator</title>
 <style>
     body {
-        font-family: Arial, sans-serif;
-        background: #f4f4f4;
+        font-family: 'Segoe UI', sans-serif;
+        background: #fafafa;
         margin: 0;
-        padding: 20px;
+        padding: 40px;
+        color: #333;
     }
 
     h1 {
         text-align: center;
+        margin-bottom: 30px;
+        font-weight: 600;
+        color: #444;
     }
 
-    .mode-buttons {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-
-    button {
-        padding: 10px 20px;
-        margin: 5px;
-        font-size: 16px;
-        cursor: pointer;
-        border: none;
-        border-radius: 6px;
-    }
-
-    .active {
-        background-color: #4CAF50;
-        color: white;
-    }
-
-    .inactive {
-        background-color: #ccc;
-        color: #333;
-    }
-
-    .container {
-        max-width: 500px;
+    .grid {
+        max-width: 700px;
         margin: auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .card {
         background: white;
         padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        border-radius: 14px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .card-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #555;
     }
 
     .row {
         display: flex;
         justify-content: space-between;
-        margin: 10px 0;
+        align-items: center;
     }
 
     input {
-        width: 80px;
-        padding: 5px;
-        font-size: 16px;
+        width: 90px;
+        padding: 6px;
+        font-size: 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
     }
 
     #total {
-        margin-top: 20px;
-        font-size: 22px;
-        font-weight: bold;
+        margin-top: 40px;
         text-align: center;
+        font-size: 26px;
+        font-weight: 700;
+        color: #222;
     }
 </style>
 </head>
@@ -72,112 +71,62 @@
 
 <h1>Weekly Pay Calculator</h1>
 
-<div class="mode-buttons">
-    <button id="everydayBtn" class="active">Everyday Mode</button>
-    <button id="supervisorBtn" class="inactive">Supervisor Mode</button>
-</div>
+<div class="grid">
 
-<div class="container" id="inputsContainer">
-    <!-- Inputs will be injected here -->
+    <div class="card">
+        <div class="card-title">Normal Hours</div>
+
+        <div class="row"><span>Base ($30/hr)</span><input type="number" data-key="base"></div>
+        <div class="row"><span>Saturday ($35/hr)</span><input type="number" data-key="sat"></div>
+        <div class="row"><span>Sunday ($40/hr)</span><input type="number" data-key="sun"></div>
+        <div class="row"><span>Sunday OT ($50/hr)</span><input type="number" data-key="sun_ot"></div>
+        <div class="row"><span>Public Holiday ($60/hr)</span><input type="number" data-key="ph"></div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Supervising Hours</div>
+
+        <div class="row"><span>Supervising Base ($40/hr)</span><input type="number" data-key="s_base"></div>
+        <div class="row"><span>Supervising Saturday ($45/hr)</span><input type="number" data-key="s_sat"></div>
+        <div class="row"><span>Supervising Sunday ($55/hr)</span><input type="number" data-key="s_sun"></div>
+        <div class="row"><span>Supervising Sunday OT ($65/hr)</span><input type="number" data-key="s_sun_ot"></div>
+        <div class="row"><span>Supervising Public Holiday ($75/hr)</span><input type="number" data-key="s_ph"></div>
+    </div>
+
 </div>
 
 <div id="total">Total: $0.00</div>
 
 <script>
-    // Pay rates for each mode
     const rates = {
-        everyday: {
-            base: 30,
-            saturday: 35,
-            sunday: 40,
-            sunday_ot: 50,
-            public_holiday: 60
-        },
-        supervisor: {
-            base: 40,
-            saturday: 45,
-            sunday: 55,
-            sunday_ot: 65,
-            public_holiday: 75
-        }
+        base: 30,
+        sat: 35,
+        sun: 40,
+        sun_ot: 50,
+        ph: 60,
+
+        s_base: 40,
+        s_sat: 45,
+        s_sun: 55,
+        s_sun_ot: 65,
+        s_ph: 75
     };
-
-    let currentMode = "everyday";
-
-    const categories = [
-        { key: "base", label: "Base" },
-        { key: "saturday", label: "Saturday" },
-        { key: "sunday", label: "Sunday" },
-        { key: "sunday_ot", label: "Sunday Overtime" },
-        { key: "public_holiday", label: "Public Holiday" }
-    ];
-
-    const container = document.getElementById("inputsContainer");
-
-    function renderInputs() {
-        container.innerHTML = "";
-        categories.forEach(cat => {
-            const row = document.createElement("div");
-            row.className = "row";
-
-            row.innerHTML = `
-                <span>${cat.label} ($${rates[currentMode][cat.key]}/hr)</span>
-                <input type="number" min="0" step="0.1" data-key="${cat.key}">
-            `;
-            container.appendChild(row);
-        });
-
-        container.querySelectorAll("input").forEach(input => {
-            input.addEventListener("input", calculateTotal);
-        });
-    }
 
     function calculateTotal() {
         let total = 0;
-        container.querySelectorAll("input").forEach(input => {
+        document.querySelectorAll("input").forEach(input => {
             const hours = parseFloat(input.value) || 0;
             const key = input.dataset.key;
-            total += hours * rates[currentMode][key];
+            total += hours * rates[key];
         });
 
-        document.getElementById("total").textContent = 
+        document.getElementById("total").textContent =
             `Total: $${total.toFixed(2)}`;
     }
 
-    // Mode switching
-    document.getElementById("everydayBtn").onclick = () => {
-        currentMode = "everyday";
-        updateButtons();
-        renderInputs();
-        calculateTotal();
-    };
-
-    document.getElementById("supervisorBtn").onclick = () => {
-        currentMode = "supervisor";
-        updateButtons();
-        renderInputs();
-        calculateTotal();
-    };
-
-    function updateButtons() {
-        const everydayBtn = document.getElementById("everydayBtn");
-        const supervisorBtn = document.getElementById("supervisorBtn");
-
-        if (currentMode === "everyday") {
-            everydayBtn.classList.add("active");
-            everydayBtn.classList.remove("inactive");
-            supervisorBtn.classList.add("inactive");
-            supervisorBtn.classList.remove("active");
-        } else {
-            supervisorBtn.classList.add("active");
-            supervisorBtn.classList.remove("inactive");
-            everydayBtn.classList.add("inactive");
-            everydayBtn.classList.remove("active");
-        }
-    }
-
-    // Initial render
-    renderInputs();
+    document.querySelectorAll("input").forEach(input => {
+        input.addEventListener("input", calculateTotal);
+    });
 </script>
 
 </body>
