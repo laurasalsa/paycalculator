@@ -128,8 +128,12 @@
             total += hours * rates[key];
         });
 
+        // calculate tax using your real-world pattern
+        const tax = total * (0.00018 * total);
+        const afterTax = total - tax;
+
         document.getElementById("total").textContent =
-            `$${total.toFixed(2)}`;
+            `$${total.toFixed(2)} ($${afterTax.toFixed(2)})`;
     }
 
     document.querySelectorAll("input").forEach(input => {
