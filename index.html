@@ -133,7 +133,7 @@
 
         // no tax withheld under $350
         if (total >= 350) {
-            tax = total * (0.00018 * total);
+            tax = 0.18 * (total - 350);
         }
 
         const afterTax = total - tax;
