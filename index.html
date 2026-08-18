@@ -129,7 +129,13 @@
         });
 
         // calculate tax using your real-world pattern
-        const tax = total * (0.00018 * total);
+        let tax = 0;
+
+        // no tax withheld under $350
+        if (total >= 350) {
+            tax = total * (0.00018 * total);
+        }
+
         const afterTax = total - tax;
 
         document.getElementById("total").textContent =
